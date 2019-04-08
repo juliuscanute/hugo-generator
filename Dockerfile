@@ -5,15 +5,15 @@ ENV HUGO_VERSION 0.53
 ENV HUGO_BINARY hugo_${HUGO_VERSION}_linux-64bit
 
 #Add base dependencies
+##Update package index
 RUN apk update
-RUN apk add --no-cache --virtual .build-deps
-RUN apk add bash
-RUN apk add curl
-
-#Add AWS CLI
-RUN apk -Uuv add groff less python py-pip
+##Virtual package of build deps not required for runtime
+RUN apk add --virtual build-deps curl py-pip
+RUN apk add bash python
 RUN pip install awscli
-RUN apk --purge -v del py-pip
+##Delete build deps that will not be used later
+RUN apk --purge -v del build-deps
+##Remove package index
 RUN rm /var/cache/apk/*
 
 #Download and install HUGO
